@@ -2,8 +2,8 @@ import s from './style.module.css';
 
 const Layout = ({title, descr, urlBg, colorBg}) => {
     const style = {
-        backgroundColor: colorBg,
-        backgroundImage: `url(${urlBg})`,
+        backgroundColor: colorBg || '',
+        backgroundImage: urlBg ? `url(${urlBg})` : 'none',
     };
 
     return (
