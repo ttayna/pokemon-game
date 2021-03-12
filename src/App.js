@@ -39,7 +39,12 @@ const App = () => {
             >
                 <div className="flex">
                     {
-                        POKEMONS.map(item => <PokemonCard {...item} />)
+                        POKEMONS.map(
+                            item => <PokemonCard
+                                key={item.id}
+                                {...item}
+                            />
+                        )
                     }
                 </div>
             </Layout>
@@ -48,11 +53,11 @@ const App = () => {
                 urlBg={bg2}
             >
                 <p>See you soon!</p>
-                <br />
-                <br />
+                <br/>
+                <br/>
             </Layout>
 
-            <Footer />
+            <Footer/>
         </>
     );
 }
