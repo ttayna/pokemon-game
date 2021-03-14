@@ -42,7 +42,11 @@ const App = () => {
                         POKEMONS.map(
                             item => <PokemonCard
                                 key={item.id}
-                                {...item}
+                                id={item.id}
+                                name={item.name}
+                                img={item.img}
+                                type={item.type}
+                                values={item.values}
                             />
                         )
                     }
