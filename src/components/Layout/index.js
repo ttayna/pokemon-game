@@ -1,6 +1,6 @@
 import s from './style.module.css';
 
-const Layout = ({title, descr, urlBg, colorBg}) => {
+const Layout = ({title, urlBg, colorBg, children}) => {
     const style = {
         backgroundColor: colorBg || '',
         backgroundImage: urlBg ? `url(${urlBg})` : 'none',
@@ -18,9 +18,9 @@ const Layout = ({title, descr, urlBg, colorBg}) => {
                         </div>
                     }
                     {
-                        descr &&
+                        children &&
                         <div className={`${s.desc} ${s.full}`}>
-                            <p>{descr}</p>
+                            {children}
                         </div>
                     }
                 </article>
