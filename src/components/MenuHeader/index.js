@@ -3,25 +3,26 @@ import Menu from "../Menu";
 import NavBar from "../NavBar";
 
 const MenuHeader = () => {
-    const [activeComponent, setActiveComponent] = useState('navbar');
-
-    const showNavBar = () => {
-        setActiveComponent('navbar');
-    }
+    const [isActiveMenu, setActiveMenu] = useState(false);
 
     const showMenu = () => {
-        setActiveComponent('menu');
+        setActiveMenu(true);
+    }
+
+    const hideMenu = () => {
+        setActiveMenu(false);
     }
 
     return (
         <>
             <Menu
-                isActive={activeComponent === 'menu'}
-                showNavBar={showNavBar}
+                isActive={isActiveMenu}
+                hideMenu={hideMenu}
             />
             <NavBar
-                isActive={activeComponent === 'navbar'}
+                isActiveMenu={isActiveMenu}
                 showMenu={showMenu}
+                hideMenu={hideMenu}
             />
         </>
     );

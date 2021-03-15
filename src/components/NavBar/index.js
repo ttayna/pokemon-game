@@ -1,9 +1,13 @@
 import classNames from 'classnames';
 import s from './style.module.css';
 
-const NavBar = ({isActive, showMenu}) => {
+const NavBar = ({isActiveMenu, showMenu, hideMenu}) => {
     const handleClick = () => {
-        showMenu && showMenu();
+        if (isActiveMenu) {
+            hideMenu && hideMenu();
+        } else {
+            showMenu && showMenu();
+        }
     }
     return (
         <nav id={s['navbar']}>
@@ -12,7 +16,7 @@ const NavBar = ({isActive, showMenu}) => {
                     LOGO
                 </p>
                 <a
-                    className={classNames(s.menuButton, {[s.active]: !isActive})}
+                    className={classNames(s.menuButton, {[s.active]: isActiveMenu})}
                     onClick={handleClick}
                 >
                     <span/>

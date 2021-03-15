@@ -1,10 +1,9 @@
 import classNames from 'classnames';
 import s from './style.module.css';
 
-const Menu = ({isActive, showNavBar}) => {
-    console.log('Menu ' + isActive);
+const Menu = ({isActive, hideMenu}) => {
     const handleClickMenuItem = () => {
-        showNavBar && showNavBar();
+        hideMenu && hideMenu();
     };
 
     return (
