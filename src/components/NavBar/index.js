@@ -1,13 +1,9 @@
 import classNames from 'classnames';
 import s from './style.module.css';
 
-const NavBar = ({isActiveMenu, showMenu, hideMenu}) => {
+const NavBar = ({isActiveMenu, toggleMenu}) => {
     const handleClick = () => {
-        if (isActiveMenu) {
-            hideMenu && hideMenu();
-        } else {
-            showMenu && showMenu();
-        }
+        toggleMenu();
     }
     return (
         <nav id={s['navbar']}>

@@ -5,8 +5,8 @@ import NavBar from "../NavBar";
 const MenuHeader = () => {
     const [isActiveMenu, setActiveMenu] = useState(false);
 
-    const showMenu = () => {
-        setActiveMenu(true);
+    const toggleMenu = () => {
+        setActiveMenu(prev => !prev);
     }
 
     const hideMenu = () => {
@@ -21,8 +21,7 @@ const MenuHeader = () => {
             />
             <NavBar
                 isActiveMenu={isActiveMenu}
-                showMenu={showMenu}
-                hideMenu={hideMenu}
+                toggleMenu={toggleMenu}
             />
         </>
     );
