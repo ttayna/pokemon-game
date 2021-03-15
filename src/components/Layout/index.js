@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import s from './style.module.css';
 
 const Layout = ({title, urlBg, colorBg, children}) => {
@@ -19,7 +20,7 @@ const Layout = ({title, urlBg, colorBg, children}) => {
                     }
                     {
                         children &&
-                        <div className={`${s.desc} ${s.full}`}>
+                        <div className={classNames(s.desc, s.full)}>
                             {children}
                         </div>
                     }
