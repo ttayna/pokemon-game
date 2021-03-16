@@ -12,6 +12,7 @@ const NavBar = ({isActiveMenu, toggleMenu}) => {
                     LOGO
                 </p>
                 <a
+                    href="/#"
                     className={classNames(s.menuButton, {[s.active]: isActiveMenu})}
                     onClick={handleClick}
                 >
