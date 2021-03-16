@@ -1,7 +1,16 @@
-const GamePage = () => {
+import s from './style.module.css';
+
+const GamePage = ({onChangePage}) => {
+    const handleClick = () => {
+        onChangePage && onChangePage('app');
+    };
+
     return (
-        <div>
-            This is Game Page!!!
+        <div className={s.page}>
+            <p>This is Game Page!!!</p>
+            <button onClick={handleClick}>
+                Go Home
+            </button>
         </div>
     )
 };

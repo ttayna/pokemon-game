@@ -7,7 +7,7 @@ const Menu = ({isActive, hideMenu}) => {
     };
 
     return (
-        <div className={classNames(s.menuContainer, {[s.active]: isActive === true, [s.deactive]: isActive === false })}>
+        <div className={classNames(s.menuContainer, {[s.active]: isActive, [s.deactive]: isActive === false})}>
             <div className={s.overlay}/>
             <div>
                 <ul>
