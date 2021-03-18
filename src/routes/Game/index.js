@@ -4,7 +4,11 @@ import POKEMONS from "../../data/pokemons.json";
 import s from './style.module.css';
 
 const GamePage = () => {
-    const [pokemons, setPokemons] = useState(JSON.parse(JSON.stringify(POKEMONS)));
+    const [pokemons, setPokemons] = useState(
+        POKEMONS.map(item => {
+            return Object.assign({}, item);
+        })
+    );
 
     const selectPokemon = (id) => {
         setPokemons(prevState => {
