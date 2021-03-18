@@ -11,7 +11,7 @@ import s from './style.module.css';
 const App = () => {
     const match = useRouteMatch('/');
     const matchHome = useRouteMatch('/home');
-    const bgActive = (!match && !matchHome) || (match && match.isExact) || (matchHome && matchHome.isExact);
+    const isHomePage = (!match && !matchHome) || (match && match.isExact) || (matchHome && matchHome.isExact);
 
     return (
         <Switch>
@@ -20,9 +20,9 @@ const App = () => {
             )}/>
             <Route>
                 <>
-                    <MenuHeader bgActive={!bgActive}/>
+                    <MenuHeader bgActive={!isHomePage}/>
                     <div className={className(s.wrap, {
-                        [s.isHomePage]: bgActive
+                        [s.isHomePage]: isHomePage
                     })}>
                         <Switch>
                             <Route path="/" exact component={HomePage}/>
