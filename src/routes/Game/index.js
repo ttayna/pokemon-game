@@ -4,24 +4,10 @@ import POKEMONS from "../../data/pokemons.json";
 import s from './style.module.css';
 
 const GamePage = () => {
-    const [pokemons, setPokemons] = useState(
-        POKEMONS.map(item => {
-            return Object.assign({}, item);
-        })
-    );
+    const [pokemons, setPokemons] = useState(POKEMONS);
 
     const selectPokemon = (id) => {
-        setPokemons(prevState => {
-            prevState.map((item) => {
-                if (item.id === id) {
-                    item.active = true;
-                }
-
-                return item;
-            });
-
-            return [...prevState];
-        });
+        setPokemons(prevState => prevState.map(item => item.id === id ? {...item, active: !item.active} : item))
     }
 
 

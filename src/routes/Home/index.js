@@ -12,18 +12,10 @@ import POKEMONS from '../../data/pokemons.json';
 import s from './style.module.css';
 
 const HomePage = () => {
-    const [homePokemons, setRandomPokemons] = useState(JSON.parse(JSON.stringify(POKEMONS)));
+    const [homePokemons, setRandomPokemons] = useState(POKEMONS);
 
     const flipCards = () => {
-        setRandomPokemons(prevState => {
-            prevState.map((item) => {
-                item.active = Math.random() > 0.5;
-
-                return item;
-            });
-
-            return [...prevState];
-        });
+        setRandomPokemons(prevState => prevState.map(item => ({...item, active: Math.random() > 0.5})));
     };
 
     return (
