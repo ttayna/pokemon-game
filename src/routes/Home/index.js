@@ -1,8 +1,7 @@
+import {useState} from 'react';
 import Header from "../../components/Header";
 import Layout from "../../components/Layout";
-import Footer from "../../components/Footer";
 import PokemonCard from "../../components/PokemonCard";
-import MenuHeader from "../../components/MenuHeader";
 
 import bg1 from '../../assets/bg1.jpg';
 import bg2 from '../../assets/bg2.jpg';
@@ -12,18 +11,18 @@ import POKEMONS from '../../data/pokemons.json';
 
 import s from './style.module.css';
 
-const HomePage = ({onChangePage}) => {
-    const handleClickButton = (page) => {
-        onChangePage && onChangePage(page);
+const HomePage = () => {
+    const [homePokemons, setRandomPokemons] = useState(POKEMONS);
+
+    const flipCards = () => {
+        setRandomPokemons(prevState => prevState.map(item => ({...item, active: Math.random() > 0.5})));
     };
 
     return (
         <>
-            <MenuHeader />
             <Header
                 title="Pokemon Game"
                 descr="This is a simple triple triad card game :)"
-                onClickButton={handleClickButton}
             />
             <Layout
                 title="Rules"
@@ -44,16 +43,20 @@ const HomePage = ({onChangePage}) => {
                 title="Cards"
                 colorBg="#154c79"
             >
+                <button onClick={flipCards}>
+                    flip random cards
+                </button>
                 <div className={s.flex}>
                     {
-                        POKEMONS.map(
+                        homePokemons.map(
                             item => <PokemonCard
-                                key={item.id}
+                                key={item.id + '_home'}
                                 id={item.id}
                                 name={item.name}
                                 img={item.img}
                                 type={item.type}
                                 values={item.values}
+                                isActive={!!item.active}
                             />
                         )
                     }
@@ -67,8 +70,6 @@ const HomePage = ({onChangePage}) => {
                 <br/>
                 <br/>
             </Layout>
-
-            <Footer/>
         </>
     );
 }

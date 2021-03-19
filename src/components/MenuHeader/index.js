@@ -2,7 +2,7 @@ import {useState} from 'react';
 import Menu from "../Menu";
 import NavBar from "../NavBar";
 
-const MenuHeader = () => {
+const MenuHeader = ({bgActive}) => {
     const [isActiveMenu, setActiveMenu] = useState(null);
 
     const toggleMenu = () => {
@@ -21,6 +21,7 @@ const MenuHeader = () => {
             />
             <NavBar
                 isActiveMenu={isActiveMenu}
+                bgActive={bgActive}
                 toggleMenu={toggleMenu}
             />
         </>

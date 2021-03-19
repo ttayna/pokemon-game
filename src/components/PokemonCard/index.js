@@ -1,14 +1,12 @@
-import {useState} from 'react';
 import classNames from 'classnames';
 
 import cardBackSide from './assets/card-back-side.jpg'
 
 import s from './style.module.css';
 
-const PokemonCard = ({name, img, id, type, values}) => {
-    const [isActive, setActive] = useState(false);
+const PokemonCard = ({name, img, id, type, values, isActive = false, selectPokemon}) => {
     const handlerClick = () => {
-        setActive(!isActive);
+        selectPokemon && selectPokemon(id);
     }
 
     return (
