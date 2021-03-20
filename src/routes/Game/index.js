@@ -8,23 +8,25 @@ const GamePage = () => {
     const [pokemons, setPokemons] = useState({});
 
     useEffect(() => {
-        database.ref('pokemons').on('value', (snapshot) => {
+        database.ref('pokemons').once('value', (snapshot) => {
             setPokemons(snapshot.val());
         })
     }, []);
 
     const selectPokemon = (pokemonKey) => {
-        setPokemons(prevState => {
-            return Object.entries(prevState).map(([key, item]) => {
-                let active = false;
-                if (pokemonKey === key) {
-                    active = true;
+        setPokemons(prevState =>
+            Object.entries(prevState).reduce((acc, [key, item]) => {
+                const pokemon = {...item};
+                if (key === pokemonKey) {
+                    pokemon.active = true;
                     database.ref('pokemons/' + key).update({'active': true});
                 }
 
-                return {...item, active: active};
-            });
-        });
+                acc[key] = pokemon;
+
+                return acc;
+            }, {})
+        );
     }
 
     const handleAddNewPokemon = () => {
@@ -32,38 +34,41 @@ const GamePage = () => {
         let newPokemon = POKEMONS[k] ?? POKEMONS[0];
 
         const newKey = database.ref().child('pokemons').push().key;
-        database.ref('pokemons/' + newKey).set(newPokemon);
+        database.ref('pokemons/' + newKey).set(newPokemon)
+            .then(() => setPokemons(prevState => {
+                return {...prevState, [newKey]: newPokemon};
+            }));
     }
 
     const handleResetStatusPokemon = () => {
-        setPokemons(prevState => {
-            let updates = {};
-            const newState = Object.entries(prevState).map(([key, item]) => {
-                const newItem = {...item, active: false}
-                updates['pokemons/' + key] = newItem;
-                return newItem;
-            });
+        setPokemons(prevState =>
+             Object.entries(prevState).reduce((acc, [key, item]) => {
+                const pokemon = {...item};
+                pokemon.active = false;
+                database.ref('pokemons/' + key).update({'active': false});
+                acc[key] = pokemon;
 
-            if (updates) {
-                database.ref().update(updates);
-            }
-
-            return newState;
-        });
-    }
-
-    const setDefaultPokemons = () => {
-        POKEMONS.forEach(item => {
-            const newKey = database.ref().child('pokemons').push().key;
-            database.ref('pokemons/' + newKey).set(item);
-            return item;
-        });
+                return acc;
+            }, {})
+        );
     }
 
     const handleResetPokemons = () => {
-        database.ref('pokemons')
-            .remove()
-            .then(setDefaultPokemons);
+        const count = 5;
+        setPokemons(prevState =>
+            Object.entries(prevState).reduce((acc, [key, item], index) => {
+                if (index >= count) {
+                    database.ref('pokemons').child(key).remove();
+                } else {
+                    const pokemon = {...item};
+                    pokemon.active = false;
+                    database.ref('pokemons/' + key).update({'active': false});
+                    acc[key] = pokemon;
+                }
+
+                return acc;
+            }, {})
+        );
     }
 
     return (
