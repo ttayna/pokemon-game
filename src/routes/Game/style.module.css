@@ -10,3 +10,30 @@ div.page p {
     align-items: center;
     flex-wrap: wrap;
 }
+
+.newPokemon button {
+    display: block;
+    margin: 0 auto;
+}
+
+.resetPokemons {
+    display: inline-block;
+    width: 100%;
+}
+
+.resetPokemons button {
+    float: right;
+    background-color: #666666;
+    margin-left: 20px;
+}
+
+.resetPokemons button.remove {
+    max-width: 300px;
+    background-color: #252934;
+}
+
+.resetPokemons button:hover {
+    border: 1px solid #252934;
+    background-color: transparent;
+    color: #252934;
+}
