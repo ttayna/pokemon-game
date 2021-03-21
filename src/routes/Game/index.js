@@ -14,19 +14,18 @@ const GamePage = () => {
     }, []);
 
     const selectPokemon = (pokemonKey) => {
-        setPokemons(prevState =>
-            Object.entries(prevState).reduce((acc, [key, item]) => {
-                const pokemon = {...item};
-                if (key === pokemonKey) {
-                    pokemon.active = true;
-                    database.ref('pokemons/' + key).update({'active': true});
-                }
+        database.ref('pokemons/' + pokemonKey).update({'active': true})
+            .then(() =>
+                setPokemons(prevState =>
+                    Object.entries(prevState).reduce((acc, [key, item]) => {
+                        const pokemon = {...item};
 
-                acc[key] = pokemon;
+                        acc[key] = key === pokemonKey ? {...pokemon, active: true} : pokemon;
 
-                return acc;
-            }, {})
-        );
+                        return acc;
+                    }, {})
+                )
+            );
     }
 
     const handleAddNewPokemon = () => {
