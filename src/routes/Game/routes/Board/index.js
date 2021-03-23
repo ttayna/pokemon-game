@@ -31,7 +31,7 @@ const BoardPage = () => {
                                     img={item.img}
                                     type={item.type}
                                     values={item.values}
-                                    isActive={item.active === undefined ? true : item.active}
+                                    isActive={true}
                                     minimize={true}
                                     className={s.card}
                                 />

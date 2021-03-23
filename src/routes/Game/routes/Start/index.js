@@ -13,36 +13,35 @@ const StartGame = () => {
 
     useEffect(() => {
         firebase.getPokemonSocket((pokemons) => {
-            setPokemons(pokemons);
+            setPokemons(
+                Object.entries(pokemons).reduce((acc, [key, item]) => {
+                    acc[key] = {...item, selected: !!pokemonContext.pokemons[key]};
+
+                    return acc;
+                }, {})
+            );
         });
-    },[firebase]);
+
+        return () => firebase.offPokemonSocket();
+    }, [firebase]);
 
     const selectPokemon = (pokemonKey) => {
-        setPokemons(prevState =>
-            Object.entries(prevState).reduce((acc, [key, item]) => {
-                const pokemon = {...item};
-
-                acc[key] = key === pokemonKey ? {...pokemon, selected: !item.selected} : pokemon;
-
-                return acc;
-            }, {})
-        );
-    }
-
-    const handleSetPokemons = () => {
-        const selectedPokemons = [];
-        Object.entries(pokemons).forEach(([key, item]) => {
-            if (!!item.selected) {
-                selectedPokemons[key] = item;
-            }
-        });
-
-        if (!Object.keys(selectedPokemons).length) {
+        const pokemon = {...pokemons[pokemonKey]};
+        if (Object.keys(pokemonContext.pokemons).length >= 5 && !(pokemon.selected === true)) {
             return;
         }
 
-        pokemonContext.onSetPokemons(selectedPokemons);
+        pokemonContext.onSetPokemon(pokemonKey, pokemon);
+        setPokemons(prevState => ({
+            ...prevState,
+            [pokemonKey]: {
+                ...prevState[pokemonKey],
+                selected: !prevState[pokemonKey].selected
+            }
+        }));
+    }
 
+    const handleSetPokemons = () => {
         history.push('/game/board');
     }
 
@@ -50,7 +49,10 @@ const StartGame = () => {
         <div className={s.page}>
             <p>Lets click on some cards :)</p>
             <div className={s.nextPage}>
-                <button onClick={handleSetPokemons}>
+                <button
+                    onClick={handleSetPokemons}
+                    disabled={!Object.keys(pokemonContext.pokemons).length || Object.keys(pokemonContext.pokemons).length > 5}
+                >
                     Start Game
                 </button>
             </div>
@@ -67,7 +69,7 @@ const StartGame = () => {
                                     img={item.img}
                                     type={item.type}
                                     values={item.values}
-                                    isActive={item.active === undefined ? true : item.active}
+                                    isActive={true}
                                     isSelected={!!item.selected}
                                 />
                             </div>
