@@ -1,0 +1,24 @@
+.root {
+    width: 268px;
+    height: 388px;
+    margin: 16px;
+    perspective: 1000px;
+}
+
+div.page p {
+    font-size: 28px;
+    font-weight: normal;
+    line-height: 32px;
+}
+
+.flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.nextPage button {
+    display: block;
+    margin: 0 auto 20px;
+}

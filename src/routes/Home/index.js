@@ -1,23 +1,12 @@
-import {useState} from 'react';
 import Header from "../../components/Header";
 import Layout from "../../components/Layout";
-import PokemonCard from "../../components/PokemonCard";
 
 import bg1 from '../../assets/bg1.jpg';
 import bg2 from '../../assets/bg2.jpg';
 // import bg3 from '../../assets/bg3.jpg';
 
-import POKEMONS from '../../data/pokemons.json';
-
-import s from './style.module.css';
 
 const HomePage = () => {
-    const [homePokemons, setRandomPokemons] = useState(POKEMONS);
-
-    const flipCards = () => {
-        setRandomPokemons(prevState => prevState.map(item => ({...item, active: Math.random() > 0.5})));
-    };
-
     return (
         <>
             <Header
@@ -38,29 +27,6 @@ const HomePage = () => {
                     will be compared. If the rank of the opponent's card is higher than the player's card, the player's
                     card will be captured and turned into the opponent's color. If the player's rank is higher, the
                     opponent's card will be captured and changed into the player's color instead.</p>
-            </Layout>
-            <Layout
-                title="Cards"
-                colorBg="#154c79"
-            >
-                <button onClick={flipCards}>
-                    flip random cards
-                </button>
-                <div className={s.flex}>
-                    {
-                        homePokemons.map(
-                            item => <PokemonCard
-                                key={item.id + '_home'}
-                                id={item.id}
-                                name={item.name}
-                                img={item.img}
-                                type={item.type}
-                                values={item.values}
-                                isActive={!!item.active}
-                            />
-                        )
-                    }
-                </div>
             </Layout>
             <Layout
                 title="The end"
