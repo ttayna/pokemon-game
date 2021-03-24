@@ -11,7 +11,8 @@ import s from './style.module.css';
 const App = () => {
     const match = useRouteMatch('/');
     const matchHome = useRouteMatch('/home');
-    const isHomePage = (!match && !matchHome) || (match && match.isExact) || (matchHome && matchHome.isExact);
+    const matchGame = useRouteMatch('/game/board');
+    const isHomePage = (!match && !matchHome) || (match && match.isExact) || (matchHome && matchHome.isExact) || (matchGame && matchGame.isExact);
 
     return (
         <FireBaseContext.Provider value={new Firebase()}>

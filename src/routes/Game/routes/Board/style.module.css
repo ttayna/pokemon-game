@@ -32,15 +32,6 @@
     background: none;
 }
 
-.card {
-    max-height: 14.8vw;
-    margin-top: -6vw;
-}
-
-.card:first-child {
-    margin-top: 0;
-}
-
 .playerOne {
     position: absolute;
     top: 4.3vw;
@@ -49,7 +40,10 @@
     height: 50.3vw;
 }
 
-.nextPage button {
-    display: block;
-    margin:0 auto 20px;
+.playerTwo {
+    position: absolute;
+    top: 4.3vw;
+    right: 5vw;
+    width: 250px;
+    height: 50.3vw;
 }

@@ -2,12 +2,12 @@ import classNames from 'classnames';
 
 import s from './style.module.css';
 
-const PokemonCard = ({name, img, id, type, values, isActive = true, isSelected = false, minimize, className}) => {
+const PokemonCard = ({name, img, id, type, values, isActive = true, isSelected = false, minimize, className, possession}) => {
     return (
         <div className={classNames(className, s.pokemonCard, {[s.active]: isActive, [s.selected]: isSelected})}>
             <div className={s.cardFront}>
                 <div className={classNames(s.wrap, s.front)}>
-                    <div className={classNames(s.pokemon, s[type])}>
+                    <div className={classNames(s.pokemon, s[type], s[possession])}>
                         <div className={s.values}>
                             <div className={classNames(s.count, s.top)}>{values.top}</div>
                             <div className={classNames(s.count, s.right)}>{values.right}</div>
