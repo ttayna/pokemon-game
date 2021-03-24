@@ -23,7 +23,7 @@ const StartGame = () => {
         });
 
         return () => firebase.offPokemonSocket();
-    }, [firebase]);
+    }, [firebase, pokemonContext.pokemons]);
 
     const selectPokemon = (pokemonKey) => {
         const pokemon = {...pokemons[pokemonKey]};
