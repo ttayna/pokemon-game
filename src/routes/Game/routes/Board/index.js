@@ -2,18 +2,20 @@ import {useState, useEffect, useContext} from 'react';
 import {useHistory} from "react-router-dom";
 import {PokemonContext} from "../../../../context/pokemonContext";
 import PokemonCard from "../../../../components/PokemonCard";
-import s from './style.module.css';
 import PlayerBoard from "./component/PlayerBoard";
+import ArrowChoice from "./component/ArrowChoice";
+import classNames from 'classnames';
+import s from './style.module.css';
 
 const counterWin = (board, player1, player2) => {
     let player1Count = player1.length;
     let player2Count = player2.length;
 
     board.forEach(item => {
-        if (item.card.possession === 'red') {
+        if (item.card && item.card.possession === 'red') {
             player2Count++;
         }
-        if (item.card.possession === 'blue') {
+        if (item.card && item.card.possession === 'blue') {
             player1Count++;
         }
     });
@@ -59,6 +61,11 @@ const BoardPage = () => {
     useEffect(() => {
         fetchBoardData();
         fetchPlayer2Data();
+
+        setTimeout(() => {
+            pokemonContext.setCurrentPlayer(Math.round(Math.random()) + 1);
+        }, 2000);
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -66,7 +73,7 @@ const BoardPage = () => {
         history.replace('/game');
     }
 
-    const handleClickBoardPlate = async (position) => {
+    const handlerClickBoardPlate = async (position) => {
         if (choiceCard) {
             const params = {
                 position,
@@ -94,6 +101,8 @@ const BoardPage = () => {
 
             setBoard(request.data);
             setSteps(prevState => (prevState + 1));
+            setChoiceCard(null);
+            pokemonContext.setCurrentPlayer(choiceCard.player === 1? 2 : 1);
         }
     }
 
@@ -109,13 +118,15 @@ const BoardPage = () => {
                 pokemonContext.onSetGameResult('draw');
             }
 
-            history.push('/game/finish');
+            setTimeout(() => history.push('/game/finish'), 1000);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [steps])
 
     return (
         <div className={s.root}>
+            <ArrowChoice side={pokemonContext.currentPlayer} />
+            <div className={classNames(s.currentPlayerOne, {[s.active]: pokemonContext.currentPlayer === 1})}/>
             <div className={s.playerOne}>
                 <PlayerBoard
                     player={1}
@@ -129,7 +140,7 @@ const BoardPage = () => {
                         <div
                             key={item.position}
                             className={s.boardPlate}
-                            onClick={() => !item.card && handleClickBoardPlate(item.position)}
+                            onClick={() => !item.card && handlerClickBoardPlate(item.position)}
                         >
                             {
                                 item.card && <PokemonCard {...item.card} isActive minimize />
@@ -139,6 +150,7 @@ const BoardPage = () => {
                 }
             </div>
 
+            <div className={classNames(s.currentPlayerTwo, {[s.active]: pokemonContext.currentPlayer === 2})}/>
             <div className={s.playerTwo}>
                 <PlayerBoard
                     player={2}

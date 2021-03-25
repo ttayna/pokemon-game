@@ -10,6 +10,7 @@ const GamePage = () => {
     const [selectedPokemons, setSelectedPokemons] = useState([]);
     const [opponentPokemons, setOpponentPokemons] = useState([]);
     const [gameResult, setGameResult] = useState(null);
+    const [currentPlayer, setCurrentPlayer] = useState(0);
 
     const handlerSetPokemon = (pokemonKey, selectedPokemon) => {
         setSelectedPokemons(prevState => {
@@ -39,6 +40,7 @@ const GamePage = () => {
         setSelectedPokemons([]);
         setOpponentPokemons([]);
         setGameResult(null);
+        setCurrentPlayer(0);
     }
 
     return (
@@ -50,6 +52,8 @@ const GamePage = () => {
             gameResult: gameResult,
             onSetGameResult: handlerSetGameResult,
             onClear: handlerClear,
+            currentPlayer: currentPlayer,
+            setCurrentPlayer: setCurrentPlayer,
         }}>
             <Switch>
                 <Route path={`${match.path}/`} exact component={StartPage} />

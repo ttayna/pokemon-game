@@ -1,10 +1,13 @@
-import {useState} from 'react';
+import {useContext, useState} from 'react';
 import PokemonCard from "../../../../../../components/PokemonCard";
+import {PokemonContext} from "../../../../../../context/pokemonContext";
 import className from 'classnames';
 import s from "./style.module.css";
 
 const PlayerBoard = ({player, cards, onClickCard}) => {
     const [isSelected, setSelected] = useState(null);
+    const pokemonContext = useContext(PokemonContext);
+
     return (
         <>
             {
@@ -15,11 +18,13 @@ const PlayerBoard = ({player, cards, onClickCard}) => {
                             [s.selected]: isSelected === item.id
                         })}
                         onClick={() => {
-                            setSelected(item.id);
-                            onClickCard && onClickCard({
-                                player,
-                                ...item
-                            })
+                            if (pokemonContext.currentPlayer === player) {
+                                setSelected(item.id);
+                                onClickCard && onClickCard({
+                                    player,
+                                    ...item
+                                })
+                            }
                         }}
                     >
                         <PokemonCard

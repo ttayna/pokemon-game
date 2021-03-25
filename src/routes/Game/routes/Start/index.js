@@ -12,6 +12,7 @@ const StartGame = () => {
     const pokemonContext = useContext(PokemonContext);
 
     useEffect(() => {
+        pokemonContext.setCurrentPlayer(0);
         firebase.getPokemonSocket((pokemons) => {
             setPokemons(
                 Object.entries(pokemons).reduce((acc, [key, item]) => {
@@ -23,7 +24,8 @@ const StartGame = () => {
         });
 
         return () => firebase.offPokemonSocket();
-    }, [firebase, pokemonContext.pokemons]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [firebase]);
 
     const selectPokemon = (pokemonKey) => {
         const pokemon = {...pokemons[pokemonKey]};
@@ -51,7 +53,7 @@ const StartGame = () => {
             <div className={s.nextPage}>
                 <button
                     onClick={handleSetPokemons}
-                    disabled={!Object.keys(pokemonContext.pokemons).length || Object.keys(pokemonContext.pokemons).length > 5}
+                    disabled={Object.keys(pokemonContext.pokemons).length !== 5}
                 >
                     Start Game
                 </button>
