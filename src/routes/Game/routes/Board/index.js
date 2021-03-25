@@ -23,10 +23,10 @@ const counterWin = (board, player1, player2) => {
 
 const BoardPage = () => {
     const history = useHistory();
-    const {pokemons} = useContext(PokemonContext);
+    const pokemonContext = useContext(PokemonContext);
     const [board, setBoard] = useState([]);
     const [player1, setPlayer1] = useState(() => {
-        return Object.values(pokemons).map(item => ({
+        return Object.values(pokemonContext.pokemons).map(item => ({
             ...item,
             possession: 'blue',
         }))
@@ -44,7 +44,7 @@ const BoardPage = () => {
 
     async function fetchPlayer2Data() {
         const player2Request = await fetch('https://reactmarathon-api.netlify.app/api/create-player');
-        const player2Response = await  player2Request.json();
+        const player2Response = await player2Request.json();
 
         setPlayer2(() => {
             return player2Response.data.map(item => ({
@@ -52,15 +52,17 @@ const BoardPage = () => {
                 possession: 'red',
             }));
         });
-    }
 
+        pokemonContext.onSetOpponentPokemon(player2Response.data);
+    }
 
     useEffect(() => {
         fetchBoardData();
         fetchPlayer2Data();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (!Object.keys(pokemons).length) {
+    if (!Object.keys(pokemonContext.pokemons).length) {
         history.replace('/game');
     }
 
@@ -100,13 +102,16 @@ const BoardPage = () => {
             const [count1, count2] = counterWin(board, player1, player2);
 
             if (count1 > count2) {
-                alert('Win');
+                pokemonContext.onSetGameResult('player1');
             } else if (count1 < count2) {
-                alert('Lose')
+                pokemonContext.onSetGameResult('player2');
             } else {
-                alert('Draw');
+                pokemonContext.onSetGameResult('draw');
             }
+
+            history.push('/game/finish');
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [steps])
 
     return (

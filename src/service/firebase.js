@@ -33,6 +33,12 @@ class Firebase {
         return await this.database.ref('pokemons').once('value').then(snapshot => snapshot.val());
     }
 
+    getOnePokemon = async (id) => {
+        return await this.database.ref('pokemons')
+            .orderByChild('id').equalTo(id)
+            .once('value').then(snapshot => snapshot.val());
+    }
+
     postPokemon = (key, pokemon) => {
         this.database.ref(`pokemons/${key}`).set(pokemon);
     }
