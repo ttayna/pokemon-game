@@ -35,7 +35,7 @@ const Finish = () => {
 
         const newPokemon = opponentPokemons.filter(item => item.selected);
         if (newPokemon.length) {
-            firebase.getOnePokemon(10040).then(pokemonBD => {
+            firebase.getOnePokemon(newPokemon[0].id).then(pokemonBD => {
                 if (!pokemonBD) {
                     firebase.addPokemon(newPokemon[0], () => {
                         clearPokemonContentAndGo();
