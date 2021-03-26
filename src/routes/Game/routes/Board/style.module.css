@@ -32,15 +32,6 @@
     background: none;
 }
 
-.card {
-    max-height: 14.8vw;
-    margin-top: -6vw;
-}
-
-.card:first-child {
-    margin-top: 0;
-}
-
 .playerOne {
     position: absolute;
     top: 4.3vw;
@@ -49,7 +40,30 @@
     height: 50.3vw;
 }
 
-.nextPage button {
-    display: block;
-    margin:0 auto 20px;
+.currentPlayerOne.active {
+    position: absolute;
+    top: 4vw;
+    left: 3vw;
+    width: 320px;
+    height: 51.3vw;
+    background-color: rgba(65, 40, 1, 0.5);
+    z-index: 0;
+}
+
+.playerTwo {
+    position: absolute;
+    top: 4.3vw;
+    right: 5vw;
+    width: 250px;
+    height: 50.3vw;
+}
+
+.currentPlayerTwo.active {
+    position: absolute;
+    top: 4vw;
+    right: 3.8vw;
+    width: 320px;
+    height: 51.3vw;
+    background-color: rgba(65, 40, 1, 0.5);
+    z-index: 0;
 }
