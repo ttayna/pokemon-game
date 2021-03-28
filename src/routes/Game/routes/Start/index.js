@@ -1,31 +1,30 @@
 import {useState, useEffect, useContext} from 'react';
 import {useHistory} from "react-router-dom";
-import {FireBaseContext} from "../../../../context/firebaseContext";
 import {PokemonContext} from "../../../../context/pokemonContext";
+import {useDispatch, useSelector} from "react-redux";
+import {getPokemonsAsync, selectPokemonsData, selectPokemonsLoading} from "../../../../store/pokemons";
 import PokemonCard from "../../../../components/PokemonCard";
+import LoadingSpinner from "../../../../components/Loader";
 import s from './style.module.css';
 
 const StartGame = () => {
     const history = useHistory();
-    const firebase = useContext(FireBaseContext);
-    const [pokemons, setPokemons] = useState({});
+    const dispatch = useDispatch();
+    const isLoading = useSelector(selectPokemonsLoading);
     const pokemonContext = useContext(PokemonContext);
+    const pokemonsRedux = useSelector(selectPokemonsData)
+
+    const [pokemons, setPokemons] = useState({});
 
     useEffect(() => {
-        pokemonContext.setCurrentPlayer(0);
-        firebase.getPokemonSocket((pokemons) => {
-            setPokemons(
-                Object.entries(pokemons).reduce((acc, [key, item]) => {
-                    acc[key] = {...item, selected: !!pokemonContext.pokemons[key]};
-
-                    return acc;
-                }, {})
-            );
-        });
-
-        return () => firebase.offPokemonSocket();
+        pokemonContext.onClear();
+        dispatch(getPokemonsAsync());
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [firebase]);
+    }, []);
+
+    useEffect(() => {
+        setPokemons(pokemonsRedux);
+    }, [pokemonsRedux]);
 
     const selectPokemon = (pokemonKey) => {
         const pokemon = {...pokemons[pokemonKey]};
@@ -59,6 +58,7 @@ const StartGame = () => {
                 </button>
             </div>
 
+            {isLoading && <LoadingSpinner />}
             <div className={s.flex}>
                 {
                     pokemons && Object.entries(pokemons).map(([key, item]) => (

@@ -52,5 +52,6 @@ class Firebase {
         this.database.ref('pokemons/' + newKey).set(data).then(callback);
     }
 }
+const FirebaseClass = new Firebase();
 
-export default Firebase;
+export default FirebaseClass;

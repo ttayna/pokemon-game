@@ -5,7 +5,7 @@ import HomePage from "./routes/Home";
 import MenuHeader from "./components/MenuHeader";
 import Footer from "./components/Footer";
 import {FireBaseContext} from "./context/firebaseContext";
-import Firebase from "./service/firebase";
+import FirebaseClass from "./service/firebase";
 import s from './style.module.css';
 
 const App = () => {
@@ -15,7 +15,7 @@ const App = () => {
     const isHomePage = (!match && !matchHome) || (match && match.isExact) || (matchHome && matchHome.isExact) || (matchGame && matchGame.isExact);
 
     return (
-        <FireBaseContext.Provider value={new Firebase()}>
+        <FireBaseContext.Provider value={FirebaseClass}>
             <Switch>
                 <Route path="/404" render={() => (
                     <h1>404 Not Found</h1>
