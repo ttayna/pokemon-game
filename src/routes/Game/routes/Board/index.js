@@ -76,14 +76,9 @@ const BoardPage = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // if (!Object.keys(pokemonContext.pokemons).length) {
-    //     history.replace('/game');
-    // }
-
-    console.log('##### pokemonsPlayer1', pokemonsPlayer1);
-    console.log('##### pokemonsPlayer2', pokemonsPlayer2);
-    console.log('##### currentPlayerRedux', currentPlayerRedux);
-    console.log('##### choiceCard', choiceCard);
+    if (!Object.keys(player1).length) {
+        history.replace('/game');
+    }
 
     const handlerClickBoardPlate = async (position) => {
         if (choiceCard) {
@@ -167,11 +162,7 @@ const BoardPage = () => {
                 <PlayerBoard
                     player={2}
                     cards={player2}
-                    onClickCard={(card) => {
-                        console.log('card');
-                        console.log(card);
-                        setChoiceCard(card)
-                    }}
+                    onClickCard={(card) => setChoiceCard(card)}
                 />
             </div>
         </div>

@@ -49,6 +49,16 @@ export const slice = createSlice({
             ...state,
             gameResult: action.payload,
         }),
+        clearState: state => ({
+            ...state,
+            isLoading: false,
+            data: {},
+            error: null,
+            player1Data: {},
+            player2Data: {},
+            currentPlayer: 0,
+            gameResult: null,
+        })
     }
 });
 
@@ -61,6 +71,7 @@ export const {
     fetchOpponentPokemonsResolve,
     setCurrentPlayer,
     setGameResult,
+    clearState,
 } = slice.actions;
 
 export const pokemonsLoading = state => state.pokemons.isLoading;
