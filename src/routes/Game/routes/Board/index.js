@@ -1,6 +1,14 @@
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect} from 'react';
 import {useHistory} from "react-router-dom";
-import {PokemonContext} from "../../../../context/pokemonContext";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    pokemonsPlayer1Data,
+    pokemonsPlayer2Data,
+    getOpponentPokemonsAsync,
+    setCurrentPlayer,
+    currentPlayer,
+    setGameResult,
+} from "../../../../store/pokemons";
 import PokemonCard from "../../../../components/PokemonCard";
 import PlayerBoard from "./component/PlayerBoard";
 import ArrowChoice from "./component/ArrowChoice";
@@ -25,10 +33,13 @@ const counterWin = (board, player1, player2) => {
 
 const BoardPage = () => {
     const history = useHistory();
-    const pokemonContext = useContext(PokemonContext);
+    const dispatch = useDispatch();
+    const pokemonsPlayer1 = useSelector(pokemonsPlayer1Data);
+    const pokemonsPlayer2 = useSelector(pokemonsPlayer2Data);
+    const currentPlayerRedux = useSelector(currentPlayer);
     const [board, setBoard] = useState([]);
     const [player1, setPlayer1] = useState(() => {
-        return Object.values(pokemonContext.pokemons).map(item => ({
+        return Object.values(pokemonsPlayer1).map(item => ({
             ...item,
             possession: 'blue',
         }))
@@ -44,34 +55,35 @@ const BoardPage = () => {
         setBoard(boardResponse.data);
     }
 
-    async function fetchPlayer2Data() {
-        const player2Request = await fetch('https://reactmarathon-api.netlify.app/api/create-player');
-        const player2Response = await player2Request.json();
-
-        setPlayer2(() => {
-            return player2Response.data.map(item => ({
-                ...item,
-                possession: 'red',
-            }));
-        });
-
-        pokemonContext.onSetOpponentPokemon(player2Response.data);
-    }
+    useEffect(() => {
+        if (Object.keys(pokemonsPlayer2).length) {
+            setPlayer2(() => {
+                return pokemonsPlayer2.map(item => ({
+                    ...item,
+                    possession: 'red',
+                }));
+            });
+        }
+    }, [pokemonsPlayer2])
 
     useEffect(() => {
         fetchBoardData();
-        fetchPlayer2Data();
+        dispatch(getOpponentPokemonsAsync());
 
         setTimeout(() => {
-            pokemonContext.setCurrentPlayer(Math.round(Math.random()) + 1);
+            dispatch(setCurrentPlayer(Math.round(Math.random()) + 1));
         }, 2000);
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (!Object.keys(pokemonContext.pokemons).length) {
-        history.replace('/game');
-    }
+    // if (!Object.keys(pokemonContext.pokemons).length) {
+    //     history.replace('/game');
+    // }
+
+    console.log('##### pokemonsPlayer1', pokemonsPlayer1);
+    console.log('##### pokemonsPlayer2', pokemonsPlayer2);
+    console.log('##### currentPlayerRedux', currentPlayerRedux);
+    console.log('##### choiceCard', choiceCard);
 
     const handlerClickBoardPlate = async (position) => {
         if (choiceCard) {
@@ -102,7 +114,7 @@ const BoardPage = () => {
             setBoard(request.data);
             setSteps(prevState => (prevState + 1));
             setChoiceCard(null);
-            pokemonContext.setCurrentPlayer(choiceCard.player === 1? 2 : 1);
+            dispatch(setCurrentPlayer(choiceCard.player === 1? 2 : 1));
         }
     }
 
@@ -111,11 +123,11 @@ const BoardPage = () => {
             const [count1, count2] = counterWin(board, player1, player2);
 
             if (count1 > count2) {
-                pokemonContext.onSetGameResult('player1');
+                dispatch(setGameResult('player1'))
             } else if (count1 < count2) {
-                pokemonContext.onSetGameResult('player2');
+                dispatch(setGameResult('player2'))
             } else {
-                pokemonContext.onSetGameResult('draw');
+                dispatch(setGameResult('draw'))
             }
 
             setTimeout(() => history.push('/game/finish'), 1000);
@@ -125,8 +137,8 @@ const BoardPage = () => {
 
     return (
         <div className={s.root}>
-            <ArrowChoice side={pokemonContext.currentPlayer} />
-            <div className={classNames(s.currentPlayerOne, {[s.active]: pokemonContext.currentPlayer === 1})}/>
+            <ArrowChoice side={currentPlayerRedux} />
+            <div className={classNames(s.currentPlayerOne, {[s.active]: currentPlayerRedux === 1})}/>
             <div className={s.playerOne}>
                 <PlayerBoard
                     player={1}
@@ -150,12 +162,16 @@ const BoardPage = () => {
                 }
             </div>
 
-            <div className={classNames(s.currentPlayerTwo, {[s.active]: pokemonContext.currentPlayer === 2})}/>
+            <div className={classNames(s.currentPlayerTwo, {[s.active]: currentPlayerRedux === 2})}/>
             <div className={s.playerTwo}>
                 <PlayerBoard
                     player={2}
                     cards={player2}
-                    onClickCard={(card) => setChoiceCard(card)}
+                    onClickCard={(card) => {
+                        console.log('card');
+                        console.log(card);
+                        setChoiceCard(card)
+                    }}
                 />
             </div>
         </div>

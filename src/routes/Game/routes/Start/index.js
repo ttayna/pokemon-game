@@ -1,8 +1,13 @@
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect} from 'react';
 import {useHistory} from "react-router-dom";
-import {PokemonContext} from "../../../../context/pokemonContext";
 import {useDispatch, useSelector} from "react-redux";
-import {getPokemonsAsync, selectPokemonsData, selectPokemonsLoading} from "../../../../store/pokemons";
+import {
+    getPokemonsAsync,
+    pokemonsData,
+    pokemonsLoading,
+    setPlayer1Pokemons,
+    pokemonsPlayer1Data,
+} from "../../../../store/pokemons";
 import PokemonCard from "../../../../components/PokemonCard";
 import LoadingSpinner from "../../../../components/Loader";
 import s from './style.module.css';
@@ -10,14 +15,14 @@ import s from './style.module.css';
 const StartGame = () => {
     const history = useHistory();
     const dispatch = useDispatch();
-    const isLoading = useSelector(selectPokemonsLoading);
-    const pokemonContext = useContext(PokemonContext);
-    const pokemonsRedux = useSelector(selectPokemonsData)
+    const isLoading = useSelector(pokemonsLoading);
+    const pokemonsRedux = useSelector(pokemonsData);
+    const pokemonsPlayer1 = useSelector(pokemonsPlayer1Data);
 
     const [pokemons, setPokemons] = useState({});
 
     useEffect(() => {
-        pokemonContext.onClear();
+        // pokemonContext.onClear();
         dispatch(getPokemonsAsync());
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -26,13 +31,25 @@ const StartGame = () => {
         setPokemons(pokemonsRedux);
     }, [pokemonsRedux]);
 
+    useEffect(() => {
+        const selectedPokemons = [];
+        Object.entries(pokemons).forEach(([key, item]) => {
+            if (!!item.selected) {
+                selectedPokemons[key] = item;
+            }
+        })
+
+        dispatch(setPlayer1Pokemons(selectedPokemons));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pokemons]);
+
+
     const selectPokemon = (pokemonKey) => {
         const pokemon = {...pokemons[pokemonKey]};
-        if (Object.keys(pokemonContext.pokemons).length >= 5 && !(pokemon.selected === true)) {
+        if (Object.keys(pokemonsPlayer1).length >= 5 && !(pokemon.selected === true)) {
             return;
         }
 
-        pokemonContext.onSetPokemon(pokemonKey, pokemon);
         setPokemons(prevState => ({
             ...prevState,
             [pokemonKey]: {
@@ -52,7 +69,7 @@ const StartGame = () => {
             <div className={s.nextPage}>
                 <button
                     onClick={handleSetPokemons}
-                    disabled={Object.keys(pokemonContext.pokemons).length !== 5}
+                    disabled={Object.keys(pokemonsPlayer1).length !== 5}
                 >
                     Start Game
                 </button>
