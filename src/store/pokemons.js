@@ -8,7 +8,7 @@ export const slice = createSlice({
         data: {},
         error: null,
         player1Data: {},
-        player2Data: {},
+        player2Data: [],
         currentPlayer: 0,
         gameResult: null,
     },

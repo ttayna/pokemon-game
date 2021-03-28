@@ -76,7 +76,7 @@ const BoardPage = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (!Object.keys(player1).length) {
+    if (!Object.keys(pokemonsPlayer1).length) {
         history.replace('/game');
     }
 

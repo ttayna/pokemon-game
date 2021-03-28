@@ -119,7 +119,7 @@ const Finish = () => {
 
             <div className={s.flex}>
                 {
-                    Object.keys(opponentPokemons) && Object.entries(opponentPokemons).map(item => (
+                    opponentPokemons && opponentPokemons.map(item => (
                         <div key={item.id} className={s.root} onClick={() => selectPokemon(item)}>
                             <PokemonCard
                                 id={item.id}
