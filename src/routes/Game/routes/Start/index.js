@@ -5,9 +5,11 @@ import {
     getPokemonsAsync,
     pokemonsData,
     pokemonsLoading,
+} from "../../../../store/pokemons";
+import {
     setPlayer1Pokemons,
     pokemonsPlayer1Data,
-} from "../../../../store/pokemons";
+} from "../../../../store/board";
 import PokemonCard from "../../../../components/PokemonCard";
 import LoadingSpinner from "../../../../components/Loader";
 import s from './style.module.css';

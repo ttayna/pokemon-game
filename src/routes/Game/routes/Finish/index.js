@@ -7,7 +7,7 @@ import {
     pokemonsPlayer2Data,
     gameResult,
     clearState,
-} from "../../../../store/pokemons";
+} from "../../../../store/board";
 import PokemonCard from "../../../../components/PokemonCard";
 import s from './style.module.css';
 

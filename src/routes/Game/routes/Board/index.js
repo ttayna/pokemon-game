@@ -8,7 +8,7 @@ import {
     setCurrentPlayer,
     currentPlayer,
     setGameResult,
-} from "../../../../store/pokemons";
+} from "../../../../store/board";
 import PokemonCard from "../../../../components/PokemonCard";
 import PlayerBoard from "./component/PlayerBoard";
 import ArrowChoice from "./component/ArrowChoice";

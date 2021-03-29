@@ -3,7 +3,7 @@ import PokemonCard from "../../../../../../components/PokemonCard";
 import {useSelector} from "react-redux";
 import {
     currentPlayer,
-} from "../../../../../../store/pokemons";
+} from "../../../../../../store/board";
 import className from 'classnames';
 import s from "./style.module.css";
 
