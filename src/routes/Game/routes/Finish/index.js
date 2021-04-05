@@ -1,17 +1,29 @@
 import {useState, useContext} from 'react';
 import {useHistory} from "react-router-dom";
-import {PokemonContext} from "../../../../context/pokemonContext";
 import {FireBaseContext} from "../../../../context/firebaseContext";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    pokemonsPlayer1Data,
+    pokemonsPlayer2Data,
+    gameResult,
+    clearState,
+} from "../../../../store/board";
 import PokemonCard from "../../../../components/PokemonCard";
 import s from './style.module.css';
 
 const Finish = () => {
     const history = useHistory();
+    const dispatch = useDispatch();
     const firebase = useContext(FireBaseContext);
-    const pokemonContext = useContext(PokemonContext);
-    const [opponentPokemons, setOpponentPokemons] = useState(pokemonContext.opponentPokemons);
+    const pokemonsPlayer1 = useSelector(pokemonsPlayer1Data);
+    const pokemonsPlayer2 = useSelector(pokemonsPlayer2Data);
+    const gameResultRedux = useSelector(gameResult);
+    const [opponentPokemons, setOpponentPokemons] = useState(pokemonsPlayer2);
 
     const selectPokemon = (pokemon) => {
+        if (gameResultRedux !== 'player1') {
+            return;
+        }
         setOpponentPokemons(prevState => prevState.map(item => ({
                 ...item,
                 selected: item.id === pokemon.id
@@ -19,17 +31,17 @@ const Finish = () => {
         );
     }
 
-    if (!Object.keys(pokemonContext.pokemons).length || !Object.keys(pokemonContext.opponentPokemons)) {
+    if (!Object.keys(pokemonsPlayer1).length || !Object.keys(pokemonsPlayer2).length) {
         history.replace('/game');
     }
 
     const clearPokemonContentAndGo = () => {
-        pokemonContext.onClear();
+        dispatch(clearState());
         history.push('/game');
     }
 
     const handleFinishGame = () => {
-        if (pokemonContext.gameResult !== 'player1') {
+        if (gameResultRedux !== 'player1') {
             clearPokemonContentAndGo();
         }
 
@@ -37,7 +49,9 @@ const Finish = () => {
         if (newPokemon.length) {
             firebase.getOnePokemon(newPokemon[0].id).then(pokemonBD => {
                 if (!pokemonBD) {
-                    firebase.addPokemon(newPokemon[0], () => {
+                    let clearPokemon = newPokemon[0];
+                    delete clearPokemon.selected;
+                    firebase.addPokemon(clearPokemon, () => {
                         clearPokemonContentAndGo();
                     })
                 } else {
@@ -51,21 +65,21 @@ const Finish = () => {
         <div className={s.page}>
             <div className={s.result}>
                 {
-                    pokemonContext.gameResult === 'player1' &&
+                    gameResultRedux === 'player1' &&
                     <>
                         <p>You won!</p>
                         <p>Choose one opponent card to save to your collection.</p>
                     </>
                 }
                 {
-                    pokemonContext.gameResult === 'player2' &&
+                    gameResultRedux === 'player2' &&
                     <>
                         <p>You lose!</p>
                         <p>Try once more</p>
                     </>
                 }
                 {
-                    pokemonContext.gameResult === 'draw' &&
+                    gameResultRedux === 'draw' &&
                     <>
                         <p>It's a draw!</p>
                         <p>Try once more</p>
@@ -75,7 +89,7 @@ const Finish = () => {
 
             <div className={s.flex}>
                 {
-                    Object.keys(pokemonContext.pokemons) && Object.entries(pokemonContext.pokemons).map(([key, item]) => (
+                    Object.keys(pokemonsPlayer1) && Object.entries(pokemonsPlayer1).map(([key, item]) => (
                             <div key={key} className={s.root}>
                                 <PokemonCard
                                     key={key}
@@ -96,7 +110,7 @@ const Finish = () => {
             <div className={s.nextPage}>
                 <button
                     onClick={handleFinishGame}
-                    disabled={pokemonContext.gameResult === 'player1' && !opponentPokemons.filter(item => item.selected).length}
+                    disabled={gameResultRedux === 'player1' && !opponentPokemons.filter(item => item.selected).length}
                 >
                     END GAME
                 </button>

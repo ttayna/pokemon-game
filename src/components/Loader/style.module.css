@@ -1,0 +1,13 @@
+.loadingSpinnerWrap {
+    z-index: 1000;
+    margin: auto;
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+}
+
+.loadingSpinnerWrap img {
+    width: 100px;
+}

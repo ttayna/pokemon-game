@@ -1,39 +1,57 @@
-import {useState, useEffect, useContext} from 'react';
+import {useState, useEffect} from 'react';
 import {useHistory} from "react-router-dom";
-import {FireBaseContext} from "../../../../context/firebaseContext";
-import {PokemonContext} from "../../../../context/pokemonContext";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    getPokemonsAsync,
+    pokemonsData,
+    pokemonsLoading,
+} from "../../../../store/pokemons";
+import {
+    setPlayer1Pokemons,
+    pokemonsPlayer1Data,
+} from "../../../../store/board";
 import PokemonCard from "../../../../components/PokemonCard";
+import LoadingSpinner from "../../../../components/Loader";
 import s from './style.module.css';
 
 const StartGame = () => {
     const history = useHistory();
-    const firebase = useContext(FireBaseContext);
+    const dispatch = useDispatch();
+    const isLoading = useSelector(pokemonsLoading);
+    const pokemonsRedux = useSelector(pokemonsData);
+    const pokemonsPlayer1 = useSelector(pokemonsPlayer1Data);
+
     const [pokemons, setPokemons] = useState({});
-    const pokemonContext = useContext(PokemonContext);
 
     useEffect(() => {
-        pokemonContext.setCurrentPlayer(0);
-        firebase.getPokemonSocket((pokemons) => {
-            setPokemons(
-                Object.entries(pokemons).reduce((acc, [key, item]) => {
-                    acc[key] = {...item, selected: !!pokemonContext.pokemons[key]};
-
-                    return acc;
-                }, {})
-            );
-        });
-
-        return () => firebase.offPokemonSocket();
+        // pokemonContext.onClear();
+        dispatch(getPokemonsAsync());
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [firebase]);
+    }, []);
+
+    useEffect(() => {
+        setPokemons(pokemonsRedux);
+    }, [pokemonsRedux]);
+
+    useEffect(() => {
+        const selectedPokemons = [];
+        Object.entries(pokemons).forEach(([key, item]) => {
+            if (!!item.selected) {
+                selectedPokemons[key] = item;
+            }
+        })
+
+        dispatch(setPlayer1Pokemons(selectedPokemons));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pokemons]);
+
 
     const selectPokemon = (pokemonKey) => {
         const pokemon = {...pokemons[pokemonKey]};
-        if (Object.keys(pokemonContext.pokemons).length >= 5 && !(pokemon.selected === true)) {
+        if (Object.keys(pokemonsPlayer1).length >= 5 && !(pokemon.selected === true)) {
             return;
         }
 
-        pokemonContext.onSetPokemon(pokemonKey, pokemon);
         setPokemons(prevState => ({
             ...prevState,
             [pokemonKey]: {
@@ -53,12 +71,13 @@ const StartGame = () => {
             <div className={s.nextPage}>
                 <button
                     onClick={handleSetPokemons}
-                    disabled={Object.keys(pokemonContext.pokemons).length !== 5}
+                    disabled={Object.keys(pokemonsPlayer1).length !== 5}
                 >
                     Start Game
                 </button>
             </div>
 
+            {isLoading && <LoadingSpinner />}
             <div className={s.flex}>
                 {
                     pokemons && Object.entries(pokemons).map(([key, item]) => (

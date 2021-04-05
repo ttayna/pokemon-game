@@ -1,17 +1,31 @@
+import {useHistory} from 'react-router-dom';
 import Header from "../../components/Header";
 import Layout from "../../components/Layout";
 
 import bg1 from '../../assets/bg1.jpg';
 import bg2 from '../../assets/bg2.jpg';
+import {useDispatch, useSelector} from "react-redux";
+import {plusAction, selectCount} from "../../store/counter";
 // import bg3 from '../../assets/bg3.jpg';
 
 
 const HomePage = () => {
+    const history = useHistory();
+    const count = useSelector(selectCount);
+    const dispatch = useDispatch();
+    console.log('##### count', count);
+
+    const handleClickButton = () => {
+        dispatch(plusAction(1));
+        history.push('/game');
+    }
+
     return (
         <>
             <Header
                 title="Pokemon Game"
                 descr="This is a simple triple triad card game :)"
+                handleClick={handleClickButton}
             />
             <Layout
                 title="Rules"
