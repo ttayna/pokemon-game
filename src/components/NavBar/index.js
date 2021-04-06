@@ -1,7 +1,9 @@
 import classNames from 'classnames';
 import s from './style.module.css';
 
-const NavBar = ({isActiveMenu, bgActive = false, toggleMenu}) => {
+import {ReactComponent as LoginSVG} from '../../assets/login.svg';
+
+const NavBar = ({isActiveMenu, bgActive = false, toggleMenu, onClickLogin, showLogin}) => {
     const handleClick = () => {
         toggleMenu();
     }
@@ -13,11 +15,22 @@ const NavBar = ({isActiveMenu, bgActive = false, toggleMenu}) => {
                 <p className={s.brand}>
                     LOGO
                 </p>
-                <div
-                    className={classNames(s.menuButton, {[s.active]: isActiveMenu})}
-                    onClick={handleClick}
-                >
-                    <span/>
+                <div className={s.loginAndMenu}>
+                    {
+                        showLogin &&
+                        <div
+                            className={s.loginWrap}
+                            onClick={onClickLogin}
+                        >
+                            <LoginSVG/>
+                        </div>
+                    }
+                    <div
+                        className={classNames(s.menuButton, {[s.active]: isActiveMenu})}
+                        onClick={handleClick}
+                    >
+                        <span/>
+                    </div>
                 </div>
             </div>
         </nav>

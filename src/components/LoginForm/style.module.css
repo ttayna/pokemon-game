@@ -1,0 +1,14 @@
+span.submit {
+    float: right;
+    margin-top: 10px;
+    color: #252934;
+    font-size: 1.4rem;
+    text-decoration: none;
+    transition: 200ms;
+    cursor: pointer;
+}
+
+span.submit:hover,
+span.submit:active {
+    color: #f300b4;
+}
