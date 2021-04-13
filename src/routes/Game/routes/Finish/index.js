@@ -1,6 +1,5 @@
-import {useState, useContext} from 'react';
+import {useState} from 'react';
 import {useHistory} from "react-router-dom";
-import {FireBaseContext} from "../../../../context/firebaseContext";
 import {useDispatch, useSelector} from "react-redux";
 import {
     pokemonsPlayer1Data,
@@ -8,17 +7,20 @@ import {
     gameResult,
     clearState,
 } from "../../../../store/board";
+import {savePokemonsAsync} from "../../../../store/pokemons";
+import {selectLocalId} from "../../../../store/user";
 import PokemonCard from "../../../../components/PokemonCard";
 import s from './style.module.css';
 
 const Finish = () => {
     const history = useHistory();
     const dispatch = useDispatch();
-    const firebase = useContext(FireBaseContext);
     const pokemonsPlayer1 = useSelector(pokemonsPlayer1Data);
     const pokemonsPlayer2 = useSelector(pokemonsPlayer2Data);
     const gameResultRedux = useSelector(gameResult);
     const [opponentPokemons, setOpponentPokemons] = useState(pokemonsPlayer2);
+
+    const localId = useSelector(selectLocalId);
 
     const selectPokemon = (pokemon) => {
         if (gameResultRedux !== 'player1') {
@@ -41,24 +43,22 @@ const Finish = () => {
     }
 
     const handleFinishGame = () => {
-        if (gameResultRedux !== 'player1') {
+        if (gameResultRedux !== 'player1' && !localId) {
             clearPokemonContentAndGo();
         }
 
         const newPokemon = opponentPokemons.filter(item => item.selected);
+
         if (newPokemon.length) {
-            firebase.getOnePokemon(newPokemon[0].id).then(pokemonBD => {
-                if (!pokemonBD) {
-                    let clearPokemon = newPokemon[0];
-                    delete clearPokemon.selected;
-                    firebase.addPokemon(clearPokemon, () => {
-                        clearPokemonContentAndGo();
-                    })
-                } else {
-                    clearPokemonContentAndGo();
-                }
-            })
+            let data = newPokemon[0];
+            delete data.selected;
+            dispatch(savePokemonsAsync(data));
         }
+
+        setTimeout(() => {
+            clearPokemonContentAndGo();
+        }, 1000);
+
     }
 
     return (

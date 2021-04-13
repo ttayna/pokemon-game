@@ -1,3 +1,5 @@
+import {useEffect} from "react";
+import {useDispatch, useSelector} from "react-redux";
 import {useRouteMatch, Route, Switch, Redirect} from "react-router-dom";
 import {NotificationContainer} from 'react-notifications';
 import className from 'classnames';
@@ -8,9 +10,11 @@ import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
 import {FireBaseContext} from "./context/firebaseContext";
 import FirebaseClass from "./service/firebase";
+import {getUserAsync, selectUserLoading} from "./store/user";
 
 import 'react-notifications/lib/notifications.css';
 import s from './style.module.css';
+import UserPage from "./routes/User";
 
 
 const App = () => {
@@ -18,6 +22,17 @@ const App = () => {
     const matchHome = useRouteMatch('/home');
     const matchGame = useRouteMatch('/game/board');
     const isHomePage = (!match && !matchHome) || (match && match.isExact) || (matchHome && matchHome.isExact) || (matchGame && matchGame.isExact);
+    const isUserLoading = useSelector(selectUserLoading);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getUserAsync());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    if (isUserLoading) {
+        return 'Loading...';
+    }
 
     return (
         <FireBaseContext.Provider value={FirebaseClass}>
@@ -34,6 +49,7 @@ const App = () => {
                             <Switch>
                                 <Route path="/" exact component={HomePage}/>
                                 <Route path="/home" component={HomePage}/>
+                                <PrivateRoute path="/user" component={UserPage}/>
                                 <PrivateRoute path="/game" component={GamePage}/>
                                 <Route path="/contact" render={() => (
                                     <>

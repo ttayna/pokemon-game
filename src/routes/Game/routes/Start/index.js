@@ -35,7 +35,7 @@ const StartGame = () => {
 
     useEffect(() => {
         const selectedPokemons = [];
-        Object.entries(pokemons).forEach(([key, item]) => {
+        Object.entries(pokemons).keys() && Object.entries(pokemons).forEach(([key, item]) => {
             if (!!item.selected) {
                 selectedPokemons[key] = item;
             }

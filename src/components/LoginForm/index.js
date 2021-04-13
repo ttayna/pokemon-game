@@ -1,11 +1,20 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Input from "../Input";
 import s from "./style.module.css";
 
-const LoginForm = ({onSubmit}) => {
+const LoginForm = ({onSubmit, isResetField = false}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isAuth, setAuth] = useState(false);
+
+    useEffect(() => {
+        clear();
+    },  [isResetField]);
+
+    const clear = () => {
+        setEmail('');
+        setPassword('');
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -13,8 +22,7 @@ const LoginForm = ({onSubmit}) => {
         onSubmit && onSubmit({
             email, password, isNewUser: isAuth
         });
-        setEmail('');
-        setPassword('');
+        clear();
     }
 
     return (
