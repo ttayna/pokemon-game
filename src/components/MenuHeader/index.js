@@ -1,18 +1,18 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {NotificationManager} from "react-notifications";
 import Menu from "../Menu";
 import NavBar from "../NavBar";
 import Modal from "../Modal";
 import LoginForm from "../LoginForm";
+import {useDispatch} from "react-redux";
+import {getUserUpdateAsync, removeUser} from "../../store/user";
+import {useHistory} from "react-router-dom";
 
 const MenuHeader = ({bgActive}) => {
     const [isActiveMenu, setActiveMenu] = useState(null);
     const [isOpenModal, setOpenModal] = useState(false);
-    const [isAuthUser, setAuthUser] = useState(false);
-
-    useEffect(() => {
-        setAuthUser(!!localStorage.getItem('idToken'));
-    }, []);
+    const dispatch = useDispatch();
+    const history = useHistory();
 
     const toggleMenu = () => {
         setActiveMenu(prev => !prev);
@@ -24,6 +24,12 @@ const MenuHeader = ({bgActive}) => {
 
     const handleClickLogin = () => {
         setOpenModal(prev => !prev);
+    }
+
+    const handleClickLogout = () => {
+        dispatch(removeUser());
+        localStorage.removeItem('idToken');
+        history.push('/');
     }
 
     const handleSubmitLoginForm = async ({email, password, isNewUser = false}) => {
@@ -46,9 +52,19 @@ const MenuHeader = ({bgActive}) => {
         if (response.hasOwnProperty('error')) {
             NotificationManager.error(response.error.message, 'Wrong!');
         } else {
+            if (isNewUser) {
+                const pokemonsStart = await fetch('https://reactmarathon-api.herokuapp.com/api/pokemons/starter').then(res => res.json());
+                for (const item of pokemonsStart.data) {
+                    await fetch(`https://pokemon-game-7885f-default-rtdb.firebaseio.com/${response.localId}/pokemons.json?auth=${response.idToken}`, {
+                        method: 'POST',
+                        body: JSON.stringify(item)
+                    });
+                }
+            }
+
             localStorage.setItem('idToken', response.idToken);
-            setAuthUser(true);
             NotificationManager.success('Success');
+            dispatch(getUserUpdateAsync());
             handleClickLogin();
         }
     }
@@ -65,7 +81,7 @@ const MenuHeader = ({bgActive}) => {
                 bgActive={bgActive}
                 toggleMenu={toggleMenu}
                 onClickLogin={handleClickLogin}
-                showLogin={!isAuthUser}
+                onClickLogout={handleClickLogout}
             />
             <Modal
                 title="Log in..."
